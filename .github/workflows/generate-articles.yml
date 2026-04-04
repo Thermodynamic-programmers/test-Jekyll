@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'articles/**'
+    branches:
+      - main
 
 jobs:
   build:
@@ -15,24 +17,33 @@ jobs:
 
       - name: Generate articles.json
         run: |
-          echo "[" > articles.json
-          first=true
-          for file in articles/*.md; do
-            [ -e "$file" ] || continue
-            id=$(basename "$file" .md)
-            if [ "$first" = true ]; then
-              first=false
-            else
-              echo "," >> articles.json
-            fi
-            echo "  \"$id\"" >> articles.json
-          done
-          echo "]" >> articles.json
+          # Создаём пустой массив
+          echo "[]" > articles.json
+          
+          # Если папка articles существует и в ней есть .md файлы
+          if [ -d "articles" ] && [ "$(ls -A articles/*.md 2>/dev/null)" ]; then
+            # Собираем имена файлов без расширения в JSON-массив
+            ls articles/*.md 2>/dev/null | \
+              xargs -n1 basename | \
+              sed 's/\.md$//' | \
+              jq -R . | \
+              jq -s . > articles.json
+          fi
+          
+          # Показываем результат в логе
+          echo "Generated articles.json:"
+          cat articles.json
 
-      - name: Commit changes
+      - name: Commit changes if any
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
           git add articles.json
-          git diff --staged --quiet || git commit -m "Update articles list"
-          git push
+          
+          # Коммитим только если есть изменения
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update articles.json [skip ci]"
+            git push
+          else
+            echo "No changes to articles.json"
+          fi
