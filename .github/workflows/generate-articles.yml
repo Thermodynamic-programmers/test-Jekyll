@@ -1,0 +1,38 @@
+name: Generate Articles List
+
+on:
+  push:
+    paths:
+      - 'articles/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate articles.json
+        run: |
+          echo "[" > articles.json
+          first=true
+          for file in articles/*.md; do
+            [ -e "$file" ] || continue
+            id=$(basename "$file" .md)
+            if [ "$first" = true ]; then
+              first=false
+            else
+              echo "," >> articles.json
+            fi
+            echo "  \"$id\"" >> articles.json
+          done
+          echo "]" >> articles.json
+
+      - name: Commit changes
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add articles.json
+          git diff --staged --quiet || git commit -m "Update articles list"
+          git push
