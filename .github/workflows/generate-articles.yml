@@ -3,7 +3,7 @@ name: Generate Articles Index
 on:
   push:
     paths:
-      - '**/*.md'  # Любые .md файлы в любых папках
+      - '**/*.md'
     branches:
       - main
 
@@ -17,19 +17,18 @@ jobs:
 
       - name: Build articles.json
         run: |
-          # Ищем все .md файлы, исключая служебные папки
           find . -type f -name "*.md" \
             ! -path "./.github/*" \
             ! -path "./node_modules/*" \
-            ! -path "*/node_modules/*" \
             ! -name "README.md" \
+            ! -name "CHANGELOG.md" \
             | sed 's|^\./||' \
             | sed 's|\.md$||' \
             | sort \
             | jq -R . \
             | jq -s '.' > articles.json
           
-          echo "✓ Сгенерирован articles.json с $(jq length articles.json) статьями"
+          echo "✓ Generated articles.json with $(jq length articles.json) articles"
           cat articles.json
 
       - name: Push changes
@@ -41,5 +40,5 @@ jobs:
             git commit -m "chore: update articles index [skip ci]"
             git push
           else
-            echo "✓ Изменений нет"
+            echo "✓ No changes"
           fi
