@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Stock — Internet Encyclopedia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+/* === ТВОИ СТИЛИ (БЕЗ ИЗМЕНЕНИЙ) === */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --bg-primary: #0a0a0a; --bg-secondary: #111111; --bg-tertiary: #1a1a1a; --bg-card: #141414; --bg-hover: #1e1e1e; --bg-active: #252525; --border-color: #222222; --border-light: #2a2a2a; --text-primary: #ffffff; --text-secondary: #a0a0a0; --text-tertiary: #666666; --text-muted: #444444; --accent: #ffffff; --accent-dim: rgba(255, 255, 255, 0.1); --accent-dim2: rgba(255, 255, 255, 0.05); --gradient-1: linear-gradient(135deg, #ffffff 0%, #888888 100%); --gradient-2: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%); --shadow-sm: 0 1px 2px rgba(0,0,0,0.5); --shadow-md: 0 4px 12px rgba(0,0,0,0.5); --shadow-lg: 0 8px 32px rgba(0,0,0,0.6); --shadow-xl: 0 16px 64px rgba(0,0,0,0.7); --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px; --radius-xl: 24px; --sidebar-width: 280px; --toc-width: 220px; --header-height: 60px; --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1); --transition-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1); --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1); --transition-spring: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--border-light) transparent; }
+html::-webkit-scrollbar { width: 6px; height: 6px; } html::-webkit-scrollbar-track { background: transparent; } html::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; } html::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.7; overflow-x: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+.animate-on-scroll { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+.animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
+.animate-on-scroll.delay-1 { transition-delay: 0.1s; } .animate-on-scroll.delay-2 { transition-delay: 0.2s; } .animate-on-scroll.delay-3 { transition-delay: 0.3s; }
+.header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid var(--border-color); z-index: 1000; display: flex; align-items: center; padding: 0 24px; animation: fadeInDown 0.6s ease-out; }
+.header-inner { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1600px; margin: 0 auto; }
+.header-left { display: flex; align-items: center; gap: 16px; }
+.menu-toggle { display: none; width: 36px; height: 36px; border: none; background: transparent; color: var(--text-primary); cursor: pointer; border-radius: var(--radius-sm); align-items: center; justify-content: center; transition: background var(--transition-fast); }
+.menu-toggle:hover { background: var(--bg-hover); } .menu-toggle svg { width: 20px; height: 20px; }
+.logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); position: relative; }
+.logo-icon { width: 34px; height: 34px; background: var(--text-primary); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--bg-primary); font-weight: 800; font-size: 16px; letter-spacing: -0.5px; transition: transform var(--transition-spring); }
+.logo:hover .logo-icon { transform: scale(1.05) rotate(-2deg); }
+.logo-text { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+.logo-text span { color: var(--text-tertiary); font-weight: 400; margin-left: 8px; font-size: 14px; }
+.header-center { flex: 1; max-width: 500px; margin: 0 32px; }
+.search-trigger { width: 100%; height: 36px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; cursor: pointer; transition: all var(--transition-fast); color: var(--text-tertiary); font-size: 14px; }
+.search-trigger:hover { border-color: var(--border-light); background: var(--bg-hover); }
+.search-trigger-left { display: flex; align-items: center; gap: 8px; } .search-trigger svg { width: 16px; height: 16px; opacity: 0.5; }
+.search-shortcut { display: flex; gap: 4px; } .search-shortcut kbd { background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 4px; padding: 2px 6px; font-size: 11px; font-family: inherit; color: var(--text-tertiary); }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.header-btn { width: 36px; height: 36px; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); }
+.header-btn:hover { background: var(--bg-hover); color: var(--text-primary); } .header-btn svg { width: 18px; height: 18px; }
+.version-badge { padding: 4px 10px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 20px; font-size: 12px; color: var(--text-tertiary); font-weight: 500; transition: all var(--transition-fast); cursor: pointer; }
+.version-badge:hover { border-color: var(--border-light); color: var(--text-secondary); }
+.sidebar { position: fixed; top: var(--header-height); left: 0; bottom: 0; width: var(--sidebar-width); background: var(--bg-primary); border-right: 1px solid var(--border-color); overflow-y: auto; z-index: 900; padding: 20px 0; transition: transform var(--transition-base); scrollbar-width: none; }
+.sidebar::-webkit-scrollbar { display: none; }
+.sidebar-section { margin-bottom: 8px; }
+.sidebar-section-header { padding: 8px 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; transition: color var(--transition-fast); }
+.sidebar-section-header:hover { color: var(--text-tertiary); }
+.sidebar-section-header .chevron { width: 14px; height: 14px; transition: transform var(--transition-base); }
+.sidebar-section.collapsed .chevron { transform: rotate(-90deg); }
+.sidebar-section.collapsed .sidebar-section-items { display: none; }
+.sidebar-section-items { display: block; }
+.sidebar-link { display: flex; align-items: center; gap: 10px; padding: 7px 20px; color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 400; transition: all var(--transition-fast); position: relative; border-radius: 0; cursor: pointer; }
+.sidebar-link::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 2px; height: 0; background: var(--text-primary); border-radius: 1px; transition: height var(--transition-base); }
+.sidebar-link:hover { color: var(--text-primary); background: var(--accent-dim2); }
+.sidebar-link.active { color: var(--text-primary); background: var(--accent-dim); }
+.sidebar-link.active::before { height: 60%; }
+.sidebar-link-icon { width: 18px; height: 18px; opacity: 0.5; flex-shrink: 0; }
+.sidebar-link.active .sidebar-link-icon { opacity: 1; }
+.sidebar-divider { height: 1px; background: var(--border-color); margin: 12px 20px; }
+.sidebar-tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: var(--accent-dim2); border: 1px solid var(--border-color); border-radius: 10px; font-size: 10px; color: var(--text-tertiary); margin-left: auto; font-weight: 500; }
+.sidebar-tag.new { background: rgba(255, 255, 255, 0.15); color: var(--text-primary); }
+.main-wrapper { margin-left: var(--sidebar-width); min-height: 100vh; }
+.main-content { max-width: 860px; margin: 0 auto; padding: 40px 64px 80px; }
+.hero { padding: 60px 0 40px; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -100px; left: -100px; right: -100px; bottom: -50px; background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 60%); pointer-events: none; }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: var(--accent-dim); border: 1px solid var(--border-color); border-radius: 20px; font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; animation: fadeInUp 0.6s ease-out 0.1s both; }
+.hero-badge-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+.hero-title { font-size: 52px; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 20px; animation: fadeInUp 0.6s ease-out 0.2s both, gradientMove 6s ease-in-out infinite; background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 50%, #ffffff 100%); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-description { font-size: 18px; color: var(--text-secondary); line-height: 1.7; max-width: 600px; margin-bottom: 36px; animation: fadeInUp 0.6s ease-out 0.3s both; }
+.hero-actions { display: flex; gap: 12px; animation: fadeInUp 0.6s ease-out 0.4s both; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; border: none; transition: all var(--transition-base); font-family: inherit; }
+.btn svg { width: 16px; height: 16px; }
+.btn-primary { background: var(--text-primary); color: var(--bg-primary); }
+.btn-primary:hover { background: #e0e0e0; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(255,255,255,0.15); }
+.btn-secondary { background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); }
+.btn-secondary:hover { background: var(--bg-hover); border-color: var(--border-light); transform: translateY(-1px); }
+.stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border-color); border-radius: var(--radius-md); overflow: hidden; margin: 48px 0; animation: fadeInUp 0.6s ease-out 0.5s both; }
+.stat-item { background: var(--bg-secondary); padding: 24px; text-align: center; transition: background var(--transition-fast); }
+.stat-item:hover { background: var(--bg-tertiary); }
+.stat-value { font-size: 28px; font-weight: 700; letter-spacing: -1px; margin-bottom: 4px; }
+.stat-label { font-size: 12px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+.section-title { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary); margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+.featured-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 48px; }
+.featured-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; text-decoration: none; color: inherit; transition: all var(--transition-base); position: relative; overflow: hidden; cursor: pointer; }
+.featured-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); opacity: 0; transition: opacity var(--transition-base); }
+.featured-card:hover { border-color: var(--border-light); background: var(--bg-hover); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.featured-card:hover::before { opacity: 1; }
+.featured-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+.featured-card-icon { width: 44px; height: 44px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; transition: all var(--transition-base); }
+.featured-card:hover .featured-card-icon { background: var(--accent-dim); border-color: var(--border-light); }
+.featured-card-icon svg { width: 22px; height: 22px; color: var(--text-secondary); }
+.featured-card:hover .featured-card-icon svg { color: var(--text-primary); }
+.featured-card-arrow { color: var(--text-muted); transition: all var(--transition-base); }
+.featured-card:hover .featured-card-arrow { color: var(--text-primary); transform: translate(2px, -2px); }
+.featured-card-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.2px; }
+.featured-card-desc { font-size: 13px; color: var(--text-tertiary); line-height: 1.6; }
+.featured-card-tags { display: flex; gap: 6px; margin-top: 16px; }
+.card-tag { padding: 3px 8px; background: var(--accent-dim2); border: 1px solid var(--border-color); border-radius: 4px; font-size: 11px; color: var(--text-tertiary); font-weight: 500; }
+.article { margin-top: 48px; }
+.article-header { margin-bottom: 40px; }
+.article-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-tertiary); margin-bottom: 20px; }
+.article-breadcrumb a { color: var(--text-secondary); text-decoration: none; transition: color var(--transition-fast); }
+.article-breadcrumb a:hover { color: var(--text-primary); }
+.article-breadcrumb svg { width: 14px; height: 14px; opacity: 0.4; }
+.article-title { font-size: 36px; font-weight: 800; letter-spacing: -1px; line-height: 1.2; margin-bottom: 16px; }
+.article-meta { display: flex; align-items: center; gap: 16px; font-size: 13px; color: var(--text-tertiary); }
+.article-meta-item { display: flex; align-items: center; gap: 6px; }
+.article-meta-item svg { width: 14px; height: 14px; opacity: 0.5; }
+.md-content h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin: 48px 0 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+.md-content h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; margin: 40px 0 16px; }
+.md-content h3 { font-size: 18px; font-weight: 600; margin: 32px 0 12px; color: var(--text-secondary); }
+.md-content p { margin-bottom: 16px; color: var(--text-secondary); line-height: 1.8; font-size: 15px; }
+.md-content a { color: var(--text-primary); text-decoration: underline; text-decoration-color: var(--border-light); text-underline-offset: 3px; transition: text-decoration-color var(--transition-fast); }
+.md-content a:hover { text-decoration-color: var(--text-primary); }
+.md-content strong { color: var(--text-primary); font-weight: 600; }
+.md-content code { font-family: 'JetBrains Mono', monospace; font-size: 0.88em; background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 2px 7px; border-radius: 4px; color: #e0e0e0; }
+.md-content pre { margin: 20px 0; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-color); }
+.code-block-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); }
+.code-block-lang { font-size: 12px; color: var(--text-tertiary); font-weight: 500; font-family: 'JetBrains Mono', monospace; }
+.code-block-copy { background: transparent; border: none; color: var(--text-tertiary); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-family: inherit; display: flex; align-items: center; gap: 4px; transition: all var(--transition-fast); }
+.code-block-copy:hover { color: var(--text-primary); background: var(--accent-dim); }
+.code-block-copy.copied { color: #4ade80; }
+.code-block-copy svg { width: 14px; height: 14px; }
+.md-content pre code { display: block; padding: 16px 20px; background: var(--bg-secondary); overflow-x: auto; font-size: 13px; line-height: 1.7; border: none; color: #d0d0d0; }
+.md-content blockquote { border-left: 3px solid var(--text-primary); padding: 16px 20px; margin: 20px 0; background: var(--accent-dim2); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.md-content blockquote p { color: var(--text-secondary); font-style: italic; }
+.md-content ul, .md-content ol { margin: 16px 0; padding-left: 24px; color: var(--text-secondary); }
+.md-content li { margin-bottom: 8px; font-size: 15px; line-height: 1.7; }
+.md-content li::marker { color: var(--text-muted); }
+.md-content img { max-width: 100%; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin: 20px 0; }
+.md-content hr { border: none; height: 1px; background: var(--border-color); margin: 40px 0; }
+.md-content table { width: 100%; border-collapse: collapse; margin: 24px 0; border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; }
+.md-content table th { background: var(--bg-tertiary); padding: 12px 16px; text-align: left; font-weight: 600; font-size: 13px; color: var(--text-primary); border-bottom: 1px solid var(--border-color); }
+.md-content table td { padding: 12px 16px; font-size: 14px; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); }
+.md-content table tr:last-child td { border-bottom: none; }
+.md-content table tr:hover td { background: var(--accent-dim2); }
+.callout { display: flex; gap: 14px; padding: 16px 20px; border-radius: var(--radius-md); margin: 24px 0; border: 1px solid; }
+.callout-icon { flex-shrink: 0; width: 20px; height: 20px; margin-top: 2px; }
+.callout-content { flex: 1; }
+.callout-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+.callout-text { font-size: 14px; line-height: 1.6; color: var(--text-secondary); }
+.callout-info, .callout-warning, .callout-tip { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.1); }
+.callout-info .callout-icon { color: #60a5fa; } .callout-warning .callout-icon { color: #fbbf24; } .callout-tip .callout-icon { color: #4ade80; }
+.nav-pagination { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border-color); }
+.nav-page { padding: 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); text-decoration: none; color: inherit; transition: all var(--transition-base); }
+.nav-page:hover { border-color: var(--border-light); background: var(--bg-hover); transform: translateY(-2px); }
+.nav-page.next { text-align: right; }
+.nav-page-label { font-size: 12px; color: var(--text-tertiary); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.nav-page.next .nav-page-label { justify-content: flex-end; }
+.nav-page-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.toc { position: fixed; right: 24px; top: calc(var(--header-height) + 40px); width: var(--toc-width); max-height: calc(100vh - var(--header-height) - 80px); overflow-y: auto; scrollbar-width: none; }
+.toc::-webkit-scrollbar { display: none; }
+.toc-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 12px; }
+.toc-list { list-style: none; }
+.toc-list li { margin-bottom: 2px; }
+.toc-link { display: block; padding: 4px 12px; font-size: 13px; color: var(--text-tertiary); text-decoration: none; border-left: 2px solid transparent; transition: all var(--transition-fast); line-height: 1.5; }
+.toc-link:hover { color: var(--text-secondary); border-left-color: var(--text-muted); }
+.toc-link.active { color: var(--text-primary); border-left-color: var(--text-primary); }
+.toc-link.level-2 { padding-left: 24px; font-size: 12px; }
+.toc-link.level-3 { padding-left: 36px; font-size: 11px; color: var(--text-muted); }
+.search-modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: flex-start; justify-content: center; padding-top: 120px; opacity: 0; visibility: hidden; transition: all var(--transition-base); }
+.search-modal-overlay.active { opacity: 1; visibility: visible; }
+.search-modal { width: 580px; max-width: 90vw; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); transform: scale(0.95) translateY(-10px); transition: transform var(--transition-spring); overflow: hidden; }
+.search-modal-overlay.active .search-modal { transform: scale(1) translateY(0); }
+.search-input-wrapper { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border-color); }
+.search-input-wrapper svg { width: 20px; height: 20px; color: var(--text-tertiary); flex-shrink: 0; }
+.search-input { flex: 1; background: none; border: none; outline: none; color: var(--text-primary); font-size: 16px; font-family: inherit; }
+.search-input::placeholder { color: var(--text-muted); }
+.search-results { max-height: 400px; overflow-y: auto; padding: 8px; }
+.search-result-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: background var(--transition-fast); }
+.search-result-item:hover, .search-result-item.selected { background: var(--accent-dim); }
+.search-result-icon { width: 32px; height: 32px; background: var(--bg-tertiary); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); flex-shrink: 0; }
+.search-result-icon svg { width: 16px; height: 16px; }
+.search-result-text { flex: 1; min-width: 0; }
+.search-result-title { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+.search-result-desc { font-size: 12px; color: var(--text-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.search-empty { padding: 32px 20px; text-align: center; color: var(--text-muted); font-size: 14px; }
+.search-footer { padding: 12px 16px; border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-muted); }
+.search-footer-keys { display: flex; gap: 12px; }
+.search-footer-keys span { display: flex; align-items: center; gap: 4px; }
+.grid-bg { position: fixed; inset: 0; z-index: -1; opacity: 0.3; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse at 50% 30%, black 20%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse at 50% 30%, black 20%, transparent 70%); }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 899; }
+@media (max-width: 1200px) { .toc { display: none; } }
+@media (max-width: 1024px) { .main-content { padding: 32px 40px 60px; } .hero-title { font-size: 40px; } .featured-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .menu-toggle { display: flex; } .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .sidebar-overlay.active { display: block; } .main-wrapper { margin-left: 0; } .main-content { padding: 24px 20px 60px; } .hero-title { font-size: 32px; } .hero-description { font-size: 16px; } .stats-bar { grid-template-columns: repeat(2, 1fr); } .nav-pagination { grid-template-columns: 1fr; } .header-center { margin: 0 16px; } .version-badge { display: none; } .hero-actions { flex-direction: column; } .btn { justify-content: center; } }
+.scroll-progress { position: fixed; top: var(--header-height); left: var(--sidebar-width); right: 0; height: 2px; z-index: 999; background: transparent; }
+.scroll-progress-bar { height: 100%; background: var(--text-primary); width: 0%; transition: width 0.1s linear; }
+@media (max-width: 768px) { .scroll-progress { left: 0; } }
+.image-placeholder { width: 100%; aspect-ratio: 16/9; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 14px; margin: 24px 0; position: relative; overflow: hidden; }
+.image-placeholder::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-hover) 50%, var(--bg-tertiary) 100%); background-size: 200% 200%; animation: gradientMove 4s ease infinite; }
+.image-placeholder svg { position: relative; z-index: 1; width: 32px; height: 32px; opacity: 0.3; }
+.service-hero { display: flex; gap: 24px; align-items: flex-start; margin-bottom: 40px; padding: 32px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); }
+.service-logo-large { width: 80px; height: 80px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.service-logo-large svg { width: 40px; height: 40px; color: var(--text-primary); }
+.service-info { flex: 1; }
+.service-name { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+.service-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; }
+.service-meta-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.service-meta-tag { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 20px; font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+.service-meta-tag svg { width: 12px; height: 12px; opacity: 0.5; }
+.comparison-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; margin: 24px 0; }
+.comparison-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 12px 20px; background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); }
+.comparison-header span { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-tertiary); }
+.comparison-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 14px 20px; border-bottom: 1px solid var(--border-color); font-size: 14px; transition: background var(--transition-fast); }
+.comparison-row:last-child { border-bottom: none; }
+.comparison-row:hover { background: var(--accent-dim2); }
+.comparison-row span { color: var(--text-secondary); }
+.comparison-row span:first-child { color: var(--text-primary); font-weight: 500; }
+.check { color: #4ade80; } .cross { color: #f87171; }
+.content-footer { margin-top: 80px; padding-top: 32px; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 13px; }
+.content-footer a { color: var(--text-secondary); text-decoration: none; }
+.content-footer a:hover { color: var(--text-primary); }
+.loading-spinner { text-align: center; padding: 40px; color: var(--text-tertiary); }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="scroll-progress"><div class="scroll-progress-bar" id="scrollProgress"></div></div>
+<header class="header">
+<div class="header-inner">
+<div class="header-left">
+<button class="menu-toggle" id="menuToggle" aria-label="Toggle menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+<a href="#" class="logo" onclick="showPage('home'); return false;"><div class="logo-icon">TS</div><div class="logo-text">The Stock<span>encyclopedia</span></div></a>
+</div>
+<div class="header-center">
+<button class="search-trigger" id="searchTrigger">
+<div class="search-trigger-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Search documentation...</span></div>
+<div class="search-shortcut"><kbd>⌘</kbd><kbd>K</kbd></div>
+</button>
+</div>
+<div class="header-right">
+<span class="version-badge">v2.4.0</span>
+<button class="header-btn tooltip" data-tooltip="GitHub" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></button>
+</div>
+</div>
+</header>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-section">
+<div class="sidebar-section-header" onclick="toggleSection(this)">Getting Started<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+<div class="sidebar-section-items">
+<a class="sidebar-link active" onclick="showPage('home'); return false;" data-page="home"><svg class="sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Introduction</a>
+<a class="sidebar-link" onclick="showPage('about'); return false;" data-page="about"><svg class="sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>About The Stock</a>
+</div>
+</div>
+<div class="sidebar-divider"></div>
+<div id="dynamic-sidebar"></div>
+<div style="padding: 20px; margin-top: 12px;">
+<div style="padding: 16px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+<div style="font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-primary);">Help improve The Stock</div>
+<div style="font-size: 12px; color: var(--text-tertiary); margin-bottom: 12px; line-height: 1.5;">Found an error? Edit this page on GitHub.</div>
+<button class="btn btn-secondary" style="width: 100%; justify-content: center; font-size: 12px; padding: 8px 16px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit this page</button>
+</div>
+</div>
+</aside>
+<main class="main-wrapper" id="mainWrapper">
+<div class="main-content">
+<div id="page-home" class="page-content">
+<div class="hero">
+<div class="hero-badge"><span class="hero-badge-dot"></span>Open-source encyclopedia</div>
+<h1 class="hero-title">The Internet<br>Encyclopedia</h1>
+<p class="hero-description">A curated collection of the best services, tools, and software for the modern internet user. Discover, compare, and learn about powerful applications.</p>
+<div class="hero-actions">
+<button class="btn btn-primary" onclick="showPage('articles', true); return false;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>Start Reading</button>
+<button class="btn btn-secondary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>Contribute</button>
+</div>
+</div>
+<div class="stats-bar">
+<div class="stat-item"><div class="stat-value" id="stat-articles">0</div><div class="stat-label">Articles</div></div>
+<div class="stat-item"><div class="stat-value">46</div><div class="stat-label">Services</div></div>
+<div class="stat-item"><div class="stat-value">12</div><div class="stat-label">Categories</div></div>
+<div class="stat-item"><div class="stat-value">3.2k</div><div class="stat-label">Contributors</div></div>
+</div>
+<h2 class="section-title">Featured Entries</h2>
+<div class="featured-grid" id="featured-grid"></div>
+<div class="content-footer"><p>Built with passion for the open-source community. <a href="#">GitHub</a> · <a href="#">Discord</a></p></div>
+</div>
+<div id="page-about" class="page-content" style="display:none;">
+<div class="article">
+<div class="article-header">
+<div class="article-breadcrumb"><a href="#" onclick="showPage('home'); return false;">Home</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg><span>About</span></div>
+<h1 class="article-title">About The Stock</h1>
+<div class="article-meta"><div class="article-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>5 min read</div><div class="article-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Updated Dec 2024</div></div>
+</div>
+<div class="md-content">
+<p><strong>The Stock</strong> is a community-driven encyclopedia dedicated to documenting the best software, services, and tools available on the internet.</p>
+<div class="callout callout-info"><svg class="callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg><div class="callout-content"><div class="callout-title">Open Source</div><div class="callout-text">The Stock is completely open-source. You can contribute articles, fix errors, or suggest new entries on our GitHub repository.</div></div></div>
+<h2>Our Mission</h2><p>We believe that the best tools should be accessible to everyone. The internet is full of incredible software, but discovering it can be overwhelming.</p>
+<h2>What We Cover</h2><ul><li><strong>Communication tools</strong> — Messengers, VoIP, forums</li><li><strong>Productivity software</strong> — Note-taking, task management, wikis</li><li><strong>Development tools</strong> — IDEs, containers, CLI utilities</li></ul>
+</div>
+<div class="nav-pagination"><a class="nav-page prev" onclick="showPage('home'); return false;"><div class="nav-page-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Previous</div><div class="nav-page-title">Introduction</div></a><a class="nav-page next" onclick="showPage('articles', true); return false;"><div class="nav-page-label">Next<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div><div class="nav-page-title">Articles</div></a></div>
+</div>
+</div>
+<div id="page-article-view" class="page-content" style="display:none;">
+<div class="article" id="article-container"></div>
+</div>
+</div>
+</main>
+<nav class="toc" id="toc"><div class="toc-title">On this page</div><ul class="toc-list" id="tocList"></ul></nav>
+<div class="search-modal-overlay" id="searchOverlay">
+<div class="search-modal">
+<div class="search-input-wrapper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="search-input" id="searchInput" placeholder="Search articles..." autocomplete="off"></div>
+<div class="search-results" id="searchResults"><div class="search-empty">Start typing to search...</div></div>
+<div class="search-footer"><div class="search-footer-keys"><span><kbd>↑</kbd><kbd>↓</kbd> Navigate</span><span><kbd>↵</kbd> Select</span><span><kbd>esc</kbd> Close</span></div></div>
+</div>
+</div>
+<script>
+let articlesData = [];
+let currentArticleIndex = -1;
+
+async function init() {
+  try {
+    const res = await fetch('articles.json');
+    articlesData = await res.json();
+    document.getElementById('stat-articles').textContent = articlesData.length;
+    renderSidebar();
+    renderFeatured();
+    setupSearch();
+  } catch (e) {
+    console.error('Failed to load articles:', e);
+  }
+}
+
+function renderSidebar() {
+  const container = document.getElementById('dynamic-sidebar');
+  if (!articlesData.length) return;
+  container.innerHTML = `
+    <div class="sidebar-section">
+      <div class="sidebar-section-header" onclick="toggleSection(this)">Articles<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+      <div class="sidebar-section-items">
+        ${articlesData.map((id, i) => `
+          <a class="sidebar-link" onclick="loadArticle('${id}', ${i}); return false;" data-page="article-${id}">
+            <svg class="sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            ${id.charAt(0).toUpperCase() + id.slice(1).replace(/-/g, ' ')}
+          </a>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderFeatured() {
+  const grid = document.getElementById('featured-grid');
+  const featured = articlesData.slice(0, 4);
+  grid.innerHTML = featured.map((id, i) => `
+    <div class="featured-card animate-on-scroll delay-${i}" onclick="loadArticle('${id}', ${articlesData.indexOf(id)})">
+      <div class="featured-card-header">
+        <div class="featured-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <svg class="featured-card-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+      </div>
+      <div class="featured-card-title">${id.charAt(0).toUpperCase() + id.slice(1).replace(/-/g, ' ')}</div>
+      <div class="featured-card-desc">Click to read full documentation about ${id}.</div>
+    </div>
+  `).join('');
+  setTimeout(triggerScrollAnimations, 100);
+}
+
+async function loadArticle(id, index) {
+  currentArticleIndex = index;
+  const container = document.getElementById('article-container');
+  container.innerHTML = '<div class="loading-spinner">Loading article...</div>';
+  
+  document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+  document.getElementById('page-article-view').style.display = 'block';
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  const activeLink = document.querySelector(`.sidebar-link[data-page="article-${id}"]`);
+  if (activeLink) activeLink.classList.add('active');
+  
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  
+  try {
+    const res = await fetch(`articles/${id}.md`);
+    if (!res.ok) throw new Error('Not found');
+    const md = await res.text();
+    const html = marked.parse(md);
+    
+    // Extract title
+    const titleMatch = html.match(/<h1[^>]*>(.*?)<\/h1>/i);
+    const title = titleMatch ? titleMatch[1] : id.charAt(0).toUpperCase() + id.slice(1).replace(/-/g, ' ');
+    
+    // Get first paragraph as description
+    const descMatch = html.match(/<p>(.*?)<\/p>/s);
+    const desc = descMatch ? descMatch[1].substring(0, 100) + '...' : 'Documentation article.';
+    
+    container.innerHTML = `
+      <div class="article-header">
+        <div class="article-breadcrumb">
+          <a href="#" onclick="showPage('home'); return false;">Home</a>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          <span>${title}</span>
+        </div>
+        <h1 class="article-title">${title}</h1>
+        <div class="article-meta">
+          <div class="article-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Auto-generated</div>
+        </div>
+      </div>
+      <div class="service-hero animate-on-scroll">
+        <div class="service-logo-large"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div class="service-info">
+          <div class="service-name">${title}</div>
+          <div class="service-desc">${desc}</div>
+        </div>
+      </div>
+      <div class="md-content">${html}</div>
+      <div class="nav-pagination">
+        ${index > 0 ? `<a class="nav-page prev" onclick="loadArticle('${articlesData[index-1]}', ${index-1}); return false;"><div class="nav-page-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Previous</div><div class="nav-page-title">${articlesData[index-1].charAt(0).toUpperCase() + articlesData[index-1].slice(1).replace(/-/g, ' ')}</div></a>` : '<div></div>'}
+        ${index < articlesData.length - 1 ? `<a class="nav-page next" onclick="loadArticle('${articlesData[index+1]}', ${index+1}); return false;"><div class="nav-page-label">Next<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div><div class="nav-page-title">${articlesData[index+1].charAt(0).toUpperCase() + articlesData[index+1].slice(1).replace(/-/g, ' ')}</div></a>` : '<div></div>'}
+      </div>
+    `;
+    
+    updateTOC();
+    setupCopyButtons();
+    triggerScrollAnimations();
+  } catch (e) {
+    container.innerHTML = '<div class="callout callout-warning"><div class="callout-content"><div class="callout-title">Error</div><div class="callout-text">Could not load article. Make sure the file exists in the articles/ folder.</div></div></div>';
+  }
+}
+
+function updateTOC() {
+  const tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  const headings = document.querySelectorAll('#article-container .md-content h2, #article-container .md-content h3');
+  headings.forEach((heading, i) => {
+    const id = 'h-' + i;
+    heading.id = id;
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.className = 'toc-link level-' + heading.tagName.charAt(1);
+    a.href = '#' + id;
+    a.textContent = heading.textContent;
+    a.addEventListener('click', (e) => { e.preventDefault(); heading.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    li.appendChild(a);
+    tocList.appendChild(li);
+  });
+  document.getElementById('toc').style.display = headings.length > 0 ? 'block' : 'none';
+}
+
+function setupCopyButtons() {
+  document.querySelectorAll('.code-block-copy').forEach(btn => {
+    btn.onclick = function() {
+      const code = this.closest('pre').querySelector('code').textContent;
+      navigator.clipboard.writeText(code);
+      this.classList.add('copied');
+      this.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+      setTimeout(() => {
+        this.classList.remove('copied');
+        this.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+      }, 2000);
+    };
+  });
+}
+
+function showPage(pageId, isArticles = false) {
+  document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+  document.getElementById('page-' + pageId).style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  const activeLink = document.querySelector(`.sidebar-link[data-page="${pageId}"]`);
+  if (activeLink) activeLink.classList.add('active');
+  if (pageId === 'home') {
+    document.getElementById('toc').style.display = 'none';
+    triggerScrollAnimations();
+  }
+  closeMobileSidebar();
+}
+
+function setupSearch() {
+  const searchInput = document.getElementById('searchInput');
+  const searchResults = document.getElementById('searchResults');
+  const iconSVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:16px;height:16px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+  
+  searchInput.addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase().trim();
+    if (!q) { searchResults.innerHTML = '<div class="search-empty">Start typing to search...</div>'; return; }
+    const filtered = articlesData.filter(id => id.toLowerCase().includes(q));
+    if (!filtered.length) { searchResults.innerHTML = `<div class="search-empty">No results for "${q}"</div>`; return; }
+    searchResults.innerHTML = filtered.map(id => `
+      <div class="search-result-item" onclick="loadArticle('${id}', ${articlesData.indexOf(id)}); document.getElementById('searchOverlay').classList.remove('active');">
+        <div class="search-result-icon">${iconSVG}</div>
+        <div class="search-result-text"><div class="search-result-title">${id.charAt(0).toUpperCase() + id.slice(1).replace(/-/g, ' ')}</div></div>
+      </div>
+    `).join('');
+  });
+}
+
+document.getElementById('searchTrigger').addEventListener('click', () => {
+  document.getElementById('searchOverlay').classList.add('active');
+  setTimeout(() => document.getElementById('searchInput').focus(), 100);
+});
+document.getElementById('searchOverlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) document.getElementById('searchOverlay').classList.remove('active'); });
+document.addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); document.getElementById('searchOverlay').classList.add('active'); setTimeout(() => document.getElementById('searchInput').focus(), 100); } if (e.key === 'Escape') document.getElementById('searchOverlay').classList.remove('active'); });
+
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  document.getElementById('scrollProgress').style.width = docHeight > 0 ? (scrollTop / docHeight) * 100 + '%' : '0%';
+});
+
+function triggerScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); }); }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+  document.querySelectorAll('.animate-on-scroll').forEach(el => { el.classList.remove('visible'); observer.observe(el); });
+}
+
+function toggleSection(header) { header.parentElement.classList.toggle('collapsed'); }
+
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+menuToggle.addEventListener('click', () => { sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('active'); });
+sidebarOverlay.addEventListener('click', () => { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); });
+function closeMobileSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); }
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
