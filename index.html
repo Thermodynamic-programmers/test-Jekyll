@@ -49,6 +49,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-primary);color
 .sidebar-section-header .chevron{width:14px;height:14px;transition:transform .2s ease}
 .sidebar-section.collapsed .chevron{transform:rotate(-90deg)}
 .sidebar-section.collapsed .sidebar-section-items{display:none}
+.sidebar-section-items{display:block;transition:opacity .2s ease}
 .sidebar-link{display:flex;align-items:center;gap:10px;padding:7px 20px;color:var(--text-secondary);text-decoration:none;font-size:14px;transition:all var(--transition-fast);cursor:pointer}
 .sidebar-link:hover{color:var(--text-primary);background:var(--accent-dim2)}
 .sidebar-link.active{color:var(--text-primary);background:var(--accent-dim)}
@@ -107,7 +108,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-primary);color
 .md-content li{margin-bottom:6px;font-size:15px}
 .md-content img{max-width:100%;border-radius:var(--radius-md);border:1px solid var(--border-color);margin:18px 0}
 .md-content hr{border:none;height:1px;background:var(--border-color);margin:36px 0}
-.md-content table{width:100%;border-collapse:separate;border-spacing:0;margin:20px 0;border:1px solid var(--border-color);border-radius:var(--radius-md);overflow:hidden}
+.md-content table{width:100%;border-collapse:separate;border-spacing:0;margin:20px 0;border:1px solid var(--border-color);border-radius:var(--radius-md);overflow:hidden;border:2px solid var(--border-color)}
 .md-content table th{background:var(--bg-tertiary);padding:11px 14px;text-align:left;font-weight:600;font-size:13px;color:var(--text-primary);border-bottom:1px solid var(--border-color);border-right:1px solid var(--border-color)}
 .md-content table th:last-child{border-right:none}
 .md-content table td{padding:11px 14px;font-size:14px;color:var(--text-secondary);border-bottom:1px solid var(--border-color);border-right:1px solid var(--border-color)}
@@ -339,7 +340,10 @@ function renderSidebar(){
   articlesData.forEach(p=>{const parts=p.split('/');const f=parts.length>1?parts[0]:'Статьи';(grouped[f]=grouped[f]||[]).push(p)});
   let html='';
   Object.entries(grouped).forEach(([folder,items])=>{
-    html+=`<div class="sidebar-section"><div class="sidebar-section-header" onclick="toggleSection(this)">${formatTitle(folder)}<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="sidebar-section-items">${items.map(id=>`<a class="sidebar-link" onclick="loadArticle('${id}');return false" data-page="article-${id}"><svg class="sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${formatTitle(id.split('/').pop())}</a>`).join('')}</div></div>`;
+    html+=`<div class="sidebar-section">
+      <div class="sidebar-section-header" onclick="toggleSection(this)">${formatTitle(folder)}<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+      <div class="sidebar-section-items">${items.map(id=>`<a class="sidebar-link" onclick="loadArticle('${id}');return false" data-page="article-${id}"><svg class="sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${formatTitle(id.split('/').pop())}</a>`).join('')}</div>
+    </div>`;
   });
   c.innerHTML=html;
 }
@@ -354,11 +358,11 @@ async function loadArticle(id){
   document.querySelectorAll('.sidebar-link').forEach(l=>l.classList.remove('active'));
   const link=document.querySelector(`.sidebar-link[data-page="article-${id}"]`);
   if(link)link.classList.add('active');
-  window.history.pushState({type:'article',id},'',basePath+id);
+  window.history.pushState({type:'article',id},'',basePath+encodeURIComponent(id));
   window.scrollTo({top:0,behavior:'instant'});
   
   try{
-    const res=await fetch(basePath+id+'.md');
+    const res=await fetch(basePath+encodeURIComponent(id)+'.md');
     if(!res.ok)throw new Error('Not found');
     const md=await res.text();
     const html=typeof marked!=='undefined'?marked.parse(md):md.replace(/\n/g,'<br>');
@@ -479,7 +483,7 @@ sidebarOverlay.addEventListener('click',()=>{sidebar.classList.remove('open');si
 function closeMobileSidebar(){sidebar.classList.remove('open');sidebarOverlay.classList.remove('active')}
 
 function handleRoute(){
-  const path=window.location.pathname.replace(/\/$/,''),articleId=path.replace(basePath,'').replace(/^\/+/,'');
+  const path=window.location.pathname.replace(/\/$/,''),articleId=decodeURIComponent(path.replace(basePath,'').replace(/^\/+/,''));
   if(articleId&&articleId!=='index.html'&&articlesData.includes(articleId)){loadArticle(articleId);return}
   showPage('home');
 }
