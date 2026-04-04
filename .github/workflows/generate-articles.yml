@@ -1,49 +1,45 @@
-name: Generate Articles List
+name: Generate Articles Index
 
 on:
   push:
     paths:
-      - 'articles/**'
+      - '**/*.md'  # Любые .md файлы в любых папках
     branches:
       - main
 
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate articles.json
+      - name: Build articles.json
         run: |
-          # Создаём пустой массив
-          echo "[]" > articles.json
+          # Ищем все .md файлы, исключая служебные папки
+          find . -type f -name "*.md" \
+            ! -path "./.github/*" \
+            ! -path "./node_modules/*" \
+            ! -path "*/node_modules/*" \
+            ! -name "README.md" \
+            | sed 's|^\./||' \
+            | sed 's|\.md$||' \
+            | sort \
+            | jq -R . \
+            | jq -s '.' > articles.json
           
-          # Если папка articles существует и в ней есть .md файлы
-          if [ -d "articles" ] && [ "$(ls -A articles/*.md 2>/dev/null)" ]; then
-            # Собираем имена файлов без расширения в JSON-массив
-            ls articles/*.md 2>/dev/null | \
-              xargs -n1 basename | \
-              sed 's/\.md$//' | \
-              jq -R . | \
-              jq -s . > articles.json
-          fi
-          
-          # Показываем результат в логе
-          echo "Generated articles.json:"
+          echo "✓ Сгенерирован articles.json с $(jq length articles.json) статьями"
           cat articles.json
 
-      - name: Commit changes if any
+      - name: Push changes
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
           git add articles.json
-          
-          # Коммитим только если есть изменения
-          if ! git diff --staged --quiet; then
-            git commit -m "chore: update articles.json [skip ci]"
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update articles index [skip ci]"
             git push
           else
-            echo "No changes to articles.json"
+            echo "✓ Изменений нет"
           fi
