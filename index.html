@@ -17,7 +17,7 @@
 --shadow-sm: 0 1px 2px rgba(0,0,0,0.5); --shadow-md: 0 4px 12px rgba(0,0,0,0.5);
 --shadow-lg: 0 8px 32px rgba(0,0,0,0.6); --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px;
 --sidebar-width: 280px; --toc-width: 200px; --header-height: 60px; --content-max-width: 1000px;
---transition-fast: 0.15s ease; --transition-base: 0.25s ease;
+--transition-fast: 0.15s ease; --transition-base: 0.25s ease; --transition-slow: 0.4s ease;
 }
 html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: var(--border-light) transparent; }
 html::-webkit-scrollbar { width: 6px; }
@@ -25,13 +25,16 @@ html::-webkit-scrollbar-track { background: transparent; }
 html::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
 body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.7; overflow-x: hidden; }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes glowPulse { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.4; } }
+@keyframes slideInLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes slideOutLeft { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 .animate-on-scroll { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
 .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
-.header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: rgba(10,10,10,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-color); z-index: 1000; display: flex; align-items: center; padding: 0 24px; }
+.header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: rgba(10,10,10,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-color); z-index: 1000; display: flex; align-items: center; padding: 0 24px; animation: fadeInDown 0.5s ease; }
 .header-inner { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1600px; margin: 0 auto; }
 .header-left { display: flex; align-items: center; gap: 16px; }
-.menu-toggle { display: none; width: 36px; height: 36px; border: none; background: transparent; color: var(--text-primary); cursor: pointer; border-radius: var(--radius-sm); }
+.menu-toggle { display: none; width: 36px; height: 36px; border: none; background: transparent; color: var(--text-primary); cursor: pointer; border-radius: var(--radius-sm); align-items: center; justify-content: center; transition: background var(--transition-fast); }
 .menu-toggle:hover { background: var(--bg-hover); }
 .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-primary); }
 .logo svg { width: 34px; height: 34px; }
@@ -45,25 +48,27 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-primary
 .header-btn { width: 36px; height: 36px; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); }
 .header-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
 .header-btn svg { width: 18px; height: 18px; }
-.version-badge { padding: 4px 10px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 20px; font-size: 12px; color: var(--text-tertiary); font-weight: 500; }
-.sidebar { position: fixed; top: var(--header-height); left: 0; bottom: 0; width: var(--sidebar-width); background: var(--bg-primary); border-right: 1px solid var(--border-color); overflow-y: auto; z-index: 900; padding: 16px 0; }
+.version-badge { padding: 4px 10px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 20px; font-size: 12px; color: var(--text-tertiary); font-weight: 500; cursor: default; }
+.sidebar { position: fixed; top: var(--header-height); left: 0; bottom: 0; width: var(--sidebar-width); background: var(--bg-primary); border-right: 1px solid var(--border-color); overflow-y: auto; z-index: 900; padding: 16px 0; transition: transform var(--transition-base); scrollbar-width: none; }
 .sidebar::-webkit-scrollbar { display: none; }
 .sidebar-section { margin-bottom: 8px; }
-.sidebar-section-header { padding: 8px 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+.sidebar-section-header { padding: 8px 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; transition: color var(--transition-fast); }
+.sidebar-section-header:hover { color: var(--text-tertiary); }
 .sidebar-section-header .chevron { width: 14px; height: 14px; transition: transform 0.2s ease; }
 .sidebar-section.collapsed .chevron { transform: rotate(-90deg); }
 .sidebar-section.collapsed .sidebar-section-items { display: none; }
+.sidebar-section-items { display: block; transition: opacity 0.2s ease; }
 .sidebar-link { display: flex; align-items: center; gap: 10px; padding: 7px 20px; color: var(--text-secondary); text-decoration: none; font-size: 14px; transition: all var(--transition-fast); cursor: pointer; }
 .sidebar-link:hover { color: var(--text-primary); background: var(--accent-dim2); }
 .sidebar-link.active { color: var(--text-primary); background: var(--accent-dim); }
 .sidebar-link-icon { width: 18px; height: 18px; opacity: 0.5; flex-shrink: 0; }
 .sidebar-link.active .sidebar-link-icon { opacity: 1; }
 .sidebar-divider { height: 1px; background: var(--border-color); margin: 12px 20px; }
-.main-wrapper { margin-left: var(--sidebar-width); min-height: 100vh; }
+.main-wrapper { margin-left: var(--sidebar-width); min-height: 100vh; transition: margin-left var(--transition-base); }
 .main-content { max-width: var(--content-max-width); margin: 0 auto; padding: 48px 72px 96px; }
 .hero { padding: 56px 0 32px; }
 .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: var(--accent-dim); border: 1px solid var(--border-color); border-radius: 20px; font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; animation: fadeInUp 0.5s ease 0.1s both; }
-.hero-badge-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; }
+.hero-badge-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
 .hero-title { font-size: 48px; font-weight: 800; letter-spacing: -1.2px; line-height: 1.1; margin-bottom: 20px; animation: fadeInUp 0.5s ease 0.2s both; }
 .hero-description { font-size: 18px; color: var(--text-secondary); line-height: 1.7; max-width: 580px; margin-bottom: 32px; animation: fadeInUp 0.5s ease 0.3s both; }
 .hero-actions { display: flex; gap: 12px; animation: fadeInUp 0.5s ease 0.4s both; }
@@ -111,7 +116,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-primary
 .md-content li { margin-bottom: 6px; font-size: 15px; }
 .md-content img { max-width: 100%; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin: 18px 0; }
 .md-content hr { border: none; height: 1px; background: var(--border-color); margin: 36px 0; }
-.md-content table { width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; }
+.md-content table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 20px 0; border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; }
 .md-content table th { background: var(--bg-tertiary); padding: 11px 14px; text-align: left; font-weight: 600; font-size: 13px; color: var(--text-primary); border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
 .md-content table th:last-child { border-right: none; }
 .md-content table td { padding: 11px 14px; font-size: 14px; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
@@ -157,16 +162,16 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-primary
 .search-result-title { font-size: 14px; font-weight: 500; color: var(--text-primary); }
 .search-empty { padding: 28px 18px; text-align: center; color: var(--text-muted); font-size: 14px; }
 .grid-bg { position: fixed; inset: 0; z-index: -1; opacity: 0.35; background: radial-gradient(ellipse at 50% 25%, rgba(255,255,255,0.06) 0%, transparent 55%); animation: glowPulse 10s ease-in-out infinite; }
-.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 899; }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 899; transition: opacity 0.2s ease; }
 .scroll-progress { position: fixed; top: var(--header-height); left: var(--sidebar-width); right: 0; height: 1px; z-index: 999; background: transparent; opacity: 0.25; }
 .scroll-progress-bar { height: 100%; background: var(--text-primary); width: 0%; transition: width 0.12s ease-out; }
 @media (max-width: 1200px) { .toc { display: none; } }
 @media (max-width: 1024px) { .main-content { padding: 36px 48px 72px; } .hero-title { font-size: 38px; } }
 @media (max-width: 768px) {
 .menu-toggle { display: flex; }
-.sidebar { transform: translateX(-100%); }
-.sidebar.open { transform: translateX(0); }
-.sidebar-overlay.active { display: block; }
+.sidebar { transform: translateX(-100%); animation: slideOutLeft 0.25s ease forwards; }
+.sidebar.open { transform: translateX(0); animation: slideInLeft 0.25s ease forwards; }
+.sidebar-overlay.active { display: block; opacity: 1; }
 .main-wrapper { margin-left: 0; }
 .main-content { padding: 28px 20px 64px; }
 .hero-title { font-size: 32px; }
@@ -190,22 +195,22 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-primary
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
 </button>
 <a href="#" class="logo" onclick="showPage('home'); return false;">
-<svg viewBox="0 0 172 158" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M60.6126 109.839L48.356 63.611L1.14551 56.3595L14.31 101.681L60.6126 109.839Z" fill="#818181"/>
-<path d="M48.356 63.611L83.31 36.8712L35.1916 28.7133L1.14551 56.3595L48.356 63.611Z" fill="#D9D9D9"/>
-<path d="M118.264 10.1315L69.2376 1.06714L35.1916 28.7133L83.31 36.8712L118.264 10.1315Z" fill="white"/>
-<path d="M48.356 63.611L60.6126 109.839L72.8692 156.067L139.146 93.5233L118.264 10.1315L83.31 36.8712L48.356 63.611Z" fill="#3D3D3D"/>
-<path d="M27.4745 147.003L72.8692 156.067L60.6126 109.839L14.31 101.681L27.4745 147.003Z" fill="#5D5D5D"/>
-<path d="M1.14551 56.3595L14.31 101.681M1.14551 56.3595L35.1916 28.7133M1.14551 56.3595L48.356 63.611M118.264 10.1315L69.2376 1.06714L35.1916 28.7133M118.264 10.1315L83.31 36.8712M118.264 10.1315L139.146 93.5233L72.8692 156.067M48.356 63.611L60.6126 109.839M48.356 63.611L83.31 36.8712M72.8692 156.067L27.4745 147.003L14.31 101.681M72.8692 156.067L60.6126 109.839M60.6126 109.839L14.31 101.681M83.31 36.8712L35.1916 28.7133" stroke="#111111" stroke-width="2"/>
-<path d="M52.1455 140.623C73.4141 146.264 85.3385 149.426 106.607 155.067L110.238 101.352L55.7763 88.2616L52.1455 140.623Z" fill="#818181"/>
-<path d="M110.238 101.352L106.607 155.067L134.746 144.685L138.376 93.6783L110.238 101.352Z" fill="#D9D9D9"/>
-<path d="M162.884 134.303L166.515 86.0046L138.376 93.6783L134.746 144.685L162.884 134.303Z" fill="#D9D9D9"/>
-<path d="M166.515 86.0046L170.146 37.706L142.007 42.6713L138.376 93.6783L166.515 86.0046Z" fill="#D9D9D9"/>
-<path d="M113.869 47.6366L110.238 101.352L138.376 93.6783L142.007 42.6713L113.869 47.6366Z" fill="#D9D9D9"/>
-<path d="M113.869 47.6366L59.407 35.9005L55.7763 88.2616L110.238 101.352L113.869 47.6366Z" fill="#818181"/>
-<path d="M59.407 35.9005L113.869 47.6366L142.007 42.6713L91.6301 30.4838L59.407 35.9005Z" fill="#D9D9D9"/>
-<path d="M142.007 42.6713L170.146 37.706L123.853 25.0671L91.6301 30.4838L142.007 42.6713Z" fill="#D9D9D9"/>
-<path d="M113.869 47.6366L59.407 35.9005M113.869 47.6366L110.238 101.352M113.869 47.6366L142.007 42.6713M106.607 155.067C85.3385 149.426 73.4141 146.264 52.1455 140.623L55.7763 88.2616M106.607 155.067L110.238 101.352M106.607 155.067L134.746 144.685M170.146 37.706L166.515 86.0046M170.146 37.706L142.007 42.6713M170.146 37.706L123.853 25.0671L91.6301 30.4838M59.407 35.9005L55.7763 88.2616M59.407 35.9005L91.6301 30.4838M110.238 101.352L55.7763 88.2616M110.238 101.352L138.376 93.6783M166.515 86.0046L162.884 134.303L134.746 144.685M166.515 86.0046L138.376 93.6783M134.746 144.685L138.376 93.6783M142.007 42.6713L91.6301 30.4838M142.007 42.6713L138.376 93.6783" stroke="#111111" stroke-width="2"/>
+<svg viewBox="0 0 177 163" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M63.4759 112.507L51.2193 66.2792L4.00879 59.0277L17.1733 104.349L63.4759 112.507Z" fill="#818181"/>
+<path d="M51.2193 66.2792L86.1733 39.5394L38.0548 31.3815L4.00879 59.0277L51.2193 66.2792Z" fill="#D9D9D9"/>
+<path d="M121.127 12.7997L72.1009 3.73535L38.0548 31.3815L86.1733 39.5394L121.127 12.7997Z" fill="white"/>
+<path d="M51.2193 66.2792L63.4759 112.507L75.7325 158.735L142.009 96.1915L121.127 12.7997L86.1733 39.5394L51.2193 66.2792Z" fill="#3D3D3D"/>
+<path d="M30.3377 149.671L75.7325 158.735L63.4759 112.507L17.1733 104.349L30.3377 149.671Z" fill="#5D5D5D"/>
+<path d="M4.00879 59.0277L17.1733 104.349M4.00879 59.0277L38.0548 31.3815M4.00879 59.0277L51.2193 66.2792M121.127 12.7997L72.1009 3.73535L38.0548 31.3815M121.127 12.7997L86.1733 39.5394M121.127 12.7997L142.009 96.1915L75.7325 158.735M51.2193 66.2792L63.4759 112.507M51.2193 66.2792L86.1733 39.5394M75.7325 158.735L30.3377 149.671L17.1733 104.349M75.7325 158.735L63.4759 112.507M63.4759 112.507L17.1733 104.349M86.1733 39.5394L38.0548 31.3815" stroke="#111111" stroke-width="7"/>
+<path d="M55.0088 143.291C76.2773 148.932 88.2018 152.094 109.47 157.735L113.101 104.02L58.6396 90.9298L55.0088 143.291Z" fill="#818181"/>
+<path d="M113.101 104.02L109.47 157.735L137.609 147.353L141.24 96.3465L113.101 104.02Z" fill="#D9D9D9"/>
+<path d="M165.747 136.971L169.378 88.6729L141.24 96.3465L137.609 147.353L165.747 136.971Z" fill="#D9D9D9"/>
+<path d="M169.378 88.6729L173.009 40.3742L144.87 45.3395L141.24 96.3465L169.378 88.6729Z" fill="#D9D9D9"/>
+<path d="M116.732 50.3048L113.101 104.02L141.24 96.3465L144.87 45.3395L116.732 50.3048Z" fill="#D9D9D9"/>
+<path d="M116.732 50.3048L62.2703 38.5687L58.6396 90.9298L113.101 104.02L116.732 50.3048Z" fill="#818181"/>
+<path d="M62.2703 38.5687L116.732 50.3048L144.87 45.3395L94.4934 33.152L62.2703 38.5687Z" fill="#D9D9D9"/>
+<path d="M144.87 45.3395L173.009 40.3742L126.716 27.7354L94.4934 33.152L144.87 45.3395Z" fill="#D9D9D9"/>
+<path d="M116.732 50.3048L62.2703 38.5687M116.732 50.3048L113.101 104.02M116.732 50.3048L144.87 45.3395M109.47 157.735C88.2018 152.094 76.2773 148.932 55.0088 143.291L58.6396 90.9298M109.47 157.735L113.101 104.02M109.47 157.735L137.609 147.353M173.009 40.3742L169.378 88.6729M173.009 40.3742L144.87 45.3395M173.009 40.3742L126.716 27.7354L94.4934 33.152M62.2703 38.5687L58.6396 90.9298M62.2703 38.5687L94.4934 33.152M113.101 104.02L58.6396 90.9298M113.101 104.02L141.24 96.3465M169.378 88.6729L165.747 136.971L137.609 147.353M169.378 88.6729L141.24 96.3465M137.609 147.353L141.24 96.3465M144.87 45.3395L94.4934 33.152M144.87 45.3395L141.24 96.3465" stroke="#111111" stroke-width="7"/>
 </svg>
 <div class="logo-text">The Stock<span>энциклопедия</span></div>
 </a>
@@ -219,7 +224,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-primary
 </button>
 </div>
 <div class="header-right">
-<span class="version-badge">v1.0.2</span>
+<span class="version-badge" id="versionBadge">v1.0.5</span>
 <a href="https://aurum2347.gitbook.io/info" target="_blank" class="header-btn" aria-label="Оригинальная энциклопедия">
 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
 </a>
@@ -228,8 +233,8 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-primary
 </header>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 <aside class="sidebar" id="sidebar">
-<div class="sidebar-section">
-<div class="sidebar-section-header" onclick="toggleSection(this)">Начало<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+<div class="sidebar-section" data-locked="true">
+<div class="sidebar-section-header" style="cursor:default">Информация</div>
 <div class="sidebar-section-items">
 <a class="sidebar-link active" onclick="showPage('home'); return false;" data-page="home">
 <svg class="sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -260,23 +265,23 @@ Telegram канал
 <div class="hero">
 <div class="hero-badge"><span class="hero-badge-dot"></span>Открытая энциклопедия</div>
 <h1 class="hero-title">Интернет<br>Энциклопедия</h1>
-<p class="hero-description">Подборка лучших сервисов, инструментов и программного обеспечения для современного пользователя. Открывайте, сравнивайте и изучайте.</p>
+<p class="hero-description">Добро пожаловать 👋<br><br>Этот сайт — моё личное собрание полезных инструментов, сервисов и решений, которые я находил по всему рунету и англоязычному комьюнити.<br><br>Ничего сверхъестественного: просто закладки, которые переросли в структурированную базу знаний.<br>Тут нет рекламы, спама или «лучших 10 способов стать гением». Есть то, что работает — и может сэкономить тебе время.<br><br><em>Сделано одним человеком — Аурумом</em><br>Если хочется поддержать меня, ссылка на ТГК ниже.</p>
 <div class="hero-actions">
 <button class="btn btn-primary" onclick="navigateToFirstArticle(); return false;">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
 Начать чтение
 </button>
-<button class="btn btn-secondary">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-Внести вклад
-</button>
+<a href="https://t.me/aurums2347" target="_blank" class="btn btn-secondary">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+Telegram канал
+</a>
 </div>
 </div>
 <div class="stats-bar">
 <div class="stat-item"><div class="stat-value" id="stat-articles">0</div><div class="stat-label">Статей</div></div>
-<div class="stat-item"><div class="stat-value">8</div><div class="stat-label">Категорий</div></div>
+<div class="stat-item"><div class="stat-value" id="stat-categories">0</div><div class="stat-label">Категорий</div></div>
 <div class="stat-item"><div class="stat-value">1</div><div class="stat-label">Автор</div></div>
-<div class="stat-item"><div class="stat-value">v1.0.2</div><div class="stat-label">Версия</div></div>
+<div class="stat-item"><div class="stat-value" id="stat-version">v1.0.5</div><div class="stat-label">Версия</div></div>
 </div>
 <div class="content-footer"><p>Сделано с любовью. <a href="https://t.me/aurums2347" target="_blank">Telegram</a></p></div>
 </div>
@@ -309,18 +314,34 @@ Telegram канал
 </div>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+// ====== НАСТРОЙКИ (меняй здесь) ======
+const APP_VERSION = 'v1.0.5'; // ← МЕНЯЙ ВЕРСИЮ ЗДЕСЬ
 const basePath = (() => { const p = window.location.pathname; const m = p.match(/\/[^/]+\/$/); return m ? m[0] : '/'; })();
 let articlesData = [], currentArticle = null;
+
+// Обновляем версию в интерфейсе
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('versionBadge').textContent = APP_VERSION;
+  document.getElementById('stat-version').textContent = APP_VERSION;
+});
 
 async function init() {
   try {
     const res = await fetch(basePath + 'articles.json');
     articlesData = await res.json();
-    document.getElementById('stat-articles').textContent = articlesData.length;
+    updateStats();
     renderSidebar();
     setupSearch();
     handleRoute();
   } catch(e) { console.error('Ошибка:', e); }
+}
+
+// Динамическая статистика
+function updateStats() {
+  document.getElementById('stat-articles').textContent = articlesData.length;
+  // Считаем уникальные категории (папки)
+  const categories = new Set(articlesData.map(p => p.includes('/') ? p.split('/')[0] : 'Статьи'));
+  document.getElementById('stat-categories').textContent = categories.size;
 }
 
 function renderSidebar() {
@@ -330,7 +351,10 @@ function renderSidebar() {
   articlesData.forEach(p => { const parts = p.split('/'); const f = parts.length > 1 ? parts[0] : 'Статьи'; (grouped[f] = grouped[f] || []).push(p); });
   let html = '';
   Object.entries(grouped).forEach(([folder, items]) => {
-    html += `<div class="sidebar-section"><div class="sidebar-section-header" onclick="toggleSection(this)">${formatTitle(folder)}<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="sidebar-section-items">${items.map(id => `<a class="sidebar-link" onclick="loadArticle('${id}'); return false;" data-page="article-${id}"><svg class="sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${formatTitle(id.split('/').pop())}</a>`).join('')}</div></div>`;
+    html += `<div class="sidebar-section">
+      <div class="sidebar-section-header" onclick="toggleSection(this)">${formatTitle(folder)}<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+      <div class="sidebar-section-items">${items.map(id => `<a class="sidebar-link" onclick="loadArticle('${id}'); return false;" data-page="article-${id}"><svg class="sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${formatTitle(id.split('/').pop())}</a>`).join('')}</div>
+    </div>`;
   });
   c.innerHTML = html;
 }
@@ -437,7 +461,12 @@ window.addEventListener('scroll', () => {
   document.getElementById('scrollProgress').style.width = dh > 0 ? (st / dh) * 100 + '%' : '0%';
 });
 
-function toggleSection(header) { header.parentElement.classList.toggle('collapsed'); }
+function toggleSection(header) {
+  // Не сворачиваем категорию "Информация" (data-locked="true")
+  if (header.closest('.sidebar-section').dataset.locked === 'true') return;
+  header.parentElement.classList.toggle('collapsed');
+}
+
 const menuToggle = document.getElementById('menuToggle'), sidebar = document.getElementById('sidebar'), sidebarOverlay = document.getElementById('sidebarOverlay');
 menuToggle.addEventListener('click', () => { sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('active'); });
 sidebarOverlay.addEventListener('click', () => { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); });
