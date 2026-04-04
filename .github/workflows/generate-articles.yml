@@ -17,6 +17,7 @@ jobs:
 
       - name: Build articles.json
         run: |
+          # Ищем все .md файлы, исключая служебные
           find . -type f -name "*.md" \
             ! -path "./.github/*" \
             ! -path "./node_modules/*" \
@@ -28,10 +29,10 @@ jobs:
             | jq -R . \
             | jq -s '.' > articles.json
           
-          echo "✓ Generated articles.json with $(jq length articles.json) articles"
+          echo "✓ Generated articles.json:"
           cat articles.json
 
-      - name: Push changes
+      - name: Commit changes
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
@@ -40,5 +41,5 @@ jobs:
             git commit -m "chore: update articles index [skip ci]"
             git push
           else
-            echo "✓ No changes"
+            echo "✓ No changes to commit"
           fi
