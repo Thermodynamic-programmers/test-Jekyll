@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-one-dark.min.css" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{--bg-primary:#0a0a0a;--bg-secondary:#111;--bg-tertiary:#1a1a1a;--bg-card:#141414;--bg-hover:#1e1e1e;--border-color:#222;--border-light:#2a2a2a;--text-primary:#fff;--text-secondary:#a0a0a0;--text-tertiary:#666;--text-muted:#444;--accent:#fff;--accent-dim:rgba(255,255,255,.1);--accent-dim2:rgba(255,255,255,.05);--shadow-lg:0 8px 32px rgba(0,0,0,.6);--radius-sm:6px;--radius-md:10px;--radius-lg:16px;--sidebar-width:280px;--toc-width:200px;--header-height:60px;--content-max:1000px;--transition-fast:.15s ease;--transition-base:.25s ease}
@@ -81,6 +82,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-primary);color
 .article-breadcrumb a:hover{color:var(--text-primary)}
 .article-breadcrumb svg{width:14px;height:14px;opacity:.4}
 .article-title{font-size:34px;font-weight:800;letter-spacing:-.8px;line-height:1.2;margin-bottom:12px}
+.article-date{font-size:13px;color:var(--text-tertiary);margin:8px 0 16px;display:flex;align-items:center;gap:6px}
+.article-date svg{width:14px;height:14px}
 .md-content h1{font-size:26px;font-weight:700;margin:44px 0 18px;padding-bottom:10px;border-bottom:1px solid var(--border-color)}
 .md-content h2{font-size:21px;font-weight:600;margin:36px 0 14px}
 .md-content h3{font-size:17px;font-weight:600;margin:28px 0 10px;color:var(--text-secondary)}
@@ -88,8 +91,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-primary);color
 .md-content a{color:var(--text-primary);text-decoration:underline;text-decoration-color:var(--border-light);text-underline-offset:3px;transition:all .15s ease}
 .md-content a:hover{text-decoration-color:var(--text-primary)}
 .md-content strong{color:var(--text-primary);font-weight:600}
-.md-content code{font-family:'JetBrains Mono',monospace;font-size:.87em;background:var(--bg-tertiary);border:1px solid var(--border-color);padding:2px 6px;border-radius:4px;color:#e5e5e5;cursor:pointer;transition:all .15s ease}
-.md-content code:hover{background:var(--bg-hover);border-color:var(--text-muted)}
+.md-content code{font-family:'JetBrains Mono',monospace;font-size:.87em;background:var(--bg-tertiary);border:1px solid var(--border-color);padding:2px 6px;border-radius:4px;color:#e5e5e5}
 .md-content pre{margin:18px 0;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border-color);position:relative}
 .code-block-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--bg-tertiary);border-bottom:1px solid var(--border-color)}
 .code-block-lang{font-size:11px;color:var(--text-tertiary);font-weight:500;font-family:'JetBrains Mono',monospace}
@@ -97,7 +99,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-primary);color
 .code-block-copy:hover{color:var(--text-primary);background:var(--accent-dim)}
 .code-block-copy.copied{color:#4ade80}
 .code-block-copy svg{width:13px;height:13px}
-.md-content pre code{display:block;padding:14px 18px;background:var(--bg-secondary);overflow-x:auto;font-size:13px;line-height:1.65;border:none;color:#d5d5d5;cursor:default}
+.md-content pre code{display:block;padding:14px 18px;background:var(--bg-secondary);overflow-x:auto;font-size:13px;line-height:1.65;border:none;color:#d5d5d5}
 .md-content blockquote{border-left:3px solid var(--text-primary);padding:14px 18px;margin:18px 0;background:var(--accent-dim2);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
 .md-content blockquote p{color:var(--text-secondary);font-style:italic;margin:0}
 .md-content ul,.md-content ol{margin:14px 0;padding-left:22px;color:var(--text-secondary)}
@@ -148,11 +150,19 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-primary);color
 .search-result-item:hover{background:var(--accent-dim)}
 .search-result-text{flex:1;min-width:0}
 .search-result-title{font-size:14px;font-weight:500;color:var(--text-primary)}
+.search-result-meta{font-size:12px;color:var(--text-tertiary);margin:4px 0}
+.search-result-description{font-size:13px;color:var(--text-secondary);line-height:1.4;max-height:60px;overflow:hidden;position:relative;-webkit-mask-image:linear-gradient(180deg,#fff 70%,transparent)}
 .search-empty{padding:28px 18px;text-align:center;color:var(--text-muted);font-size:14px}
 .grid-bg{position:fixed;inset:0;z-index:-1;opacity:.35;background:radial-gradient(ellipse at 50% 25%,rgba(255,255,255,.06) 0,transparent 55%);animation:glowPulse 10s ease-in-out infinite}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:899;transition:opacity .2s ease}
 .scroll-progress{position:fixed;top:var(--header-height);left:var(--sidebar-width);right:0;height:1px;z-index:999;background:transparent;opacity:.25}
 .scroll-progress-bar{height:100%;background:var(--text-primary);width:0;transition:width .12s ease-out}
+.notification{position:fixed;top:20px;right:20px;padding:12px 18px;border-radius:8px;color:white;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:3000;transform:translateX(120%);transition:transform .3s ease}
+.notification.show{transform:translateX(0)}
+.notification.success{background:#10b981}
+.notification.error{background:#ef4444}
+.loading-spinner{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-radius:50%;border-top-color:var(--text-primary);animation:spin 1s linear infinite;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:1200px){.toc{display:none}}
 @media(max-width:1024px){.main-content{padding:36px 48px 72px}.hero-title{font-size:38px}}
 @media(max-width:768px){.menu-toggle{display:flex}.sidebar{transform:translateX(-100%);animation:slideOutLeft .25s ease forwards}.sidebar.open{transform:translateX(0);animation:slideInLeft .25s ease forwards}.sidebar-overlay.active{display:block;opacity:1}.main-wrapper{margin-left:0}.main-content{padding:28px 20px 64px}.hero-title{font-size:32px}.hero-description{font-size:16px}.stats-bar{grid-template-columns:repeat(2,1fr)}.nav-pagination{grid-template-columns:1fr}.header-center{margin:0 16px}.version-badge{display:none}.hero-actions{flex-direction:column}.scroll-progress{left:0}}
@@ -167,7 +177,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-primary);color
 <button class="menu-toggle" id="menuToggle" aria-label="Меню">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
 </button>
-<a href="#" class="logo" onclick="showPage('home');return false">
+<a href="#" class="logo" onclick="showHome();return false">
 <svg viewBox="0 0 177 163" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M63.4759 112.507L51.2193 66.2792L4.00879 59.0277L17.1733 104.349L63.4759 112.507Z" fill="#818181"/>
 <path d="M51.2193 66.2792L86.1733 39.5394L38.0548 31.3815L4.00879 59.0277L51.2193 66.2792Z" fill="#D9D9D9"/>
@@ -192,12 +202,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-primary);color
 <button class="search-trigger" id="searchTrigger">
 <div style="display:flex;align-items:center;gap:8px">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<span>Поиск...</span>
+<span>Поиск по статьям...</span>
 </div>
 </button>
 </div>
 <div class="header-right">
-<span class="version-badge" id="versionBadge">v1.0.6</span>
+<span class="version-badge" id="versionBadge">v2.0</span>
 <a href="https://aurum2347.gitbook.io/info" target="_blank" class="header-btn" aria-label="Оригинал">
 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
 </a>
@@ -207,13 +217,13 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg-primary);color
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 <aside class="sidebar" id="sidebar">
 <div class="sidebar-section" data-locked="true">
-<div class="sidebar-section-header" style="cursor:default">Информация</div>
+<div class="sidebar-section-header" style="cursor:default">Навигация</div>
 <div class="sidebar-section-items">
-<a class="sidebar-link active" onclick="showPage('home');return false" data-page="home">
+<a class="sidebar-link active" onclick="showHome();return false" data-page="home">
 <svg class="sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-Введение
+Главная
 </a>
-<a class="sidebar-link" onclick="showPage('about');return false" data-page="about">
+<a class="sidebar-link" onclick="showAbout();return false" data-page="about">
 <svg class="sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
 О проекте
 </a>
@@ -254,14 +264,14 @@ Telegram канал
 <div class="stat-item"><div class="stat-value" id="stat-articles">0</div><div class="stat-label">Статей</div></div>
 <div class="stat-item"><div class="stat-value" id="stat-categories">0</div><div class="stat-label">Категорий</div></div>
 <div class="stat-item"><div class="stat-value">1</div><div class="stat-label">Автор</div></div>
-<div class="stat-item"><div class="stat-value" id="stat-version">v1.0.6</div><div class="stat-label">Версия</div></div>
+<div class="stat-item"><div class="stat-value" id="stat-version">v2.0</div><div class="stat-label">Версия</div></div>
 </div>
 <div class="content-footer"><p>Сделано с любовью. <a href="https://t.me/aurums2347" target="_blank">Telegram</a></p></div>
 </div>
 <div id="page-about" class="page-content" style="display:none">
 <div class="article">
 <div class="article-header">
-<div class="article-breadcrumb"><a href="#" onclick="showPage('home');return false">Главная</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><span>О проекте</span></div>
+<div class="article-breadcrumb"><a href="#" onclick="showHome();return false">Главная</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><span>О проекте</span></div>
 <h1 class="article-title">О проекте The Stock</h1>
 </div>
 <div class="md-content">
@@ -281,7 +291,7 @@ Telegram канал
 </div>
 </div>
 <div class="nav-pagination">
-<div class="nav-page" onclick="showPage('home');return false">
+<div class="nav-page" onclick="showHome();return false">
 <div class="nav-page-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Назад</div>
 <div class="nav-page-title">Введение</div>
 </div>
@@ -300,31 +310,52 @@ Telegram канал
 <nav class="toc" id="toc"><div class="toc-title">На этой странице</div><ul class="toc-list" id="tocList"></ul></nav>
 <div class="search-modal-overlay" id="searchOverlay">
 <div class="search-modal">
-<div class="search-input-wrapper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="search-input" id="searchInput" placeholder="Поиск статей..." autocomplete="off"></div>
+<div class="search-input-wrapper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="search-input" id="searchInput" placeholder="Поиск по заголовкам, описанию, содержимому..." autocomplete="off"></div>
 <div class="search-results" id="searchResults"><div class="search-empty">Начните вводить для поиска...</div></div>
 </div>
 </div>
+<div class="notification" id="notification"></div>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 <script>
-const APP_VERSION='v1.0.6';
-const basePath=(()=>{const p=window.location.pathname;const m=p.match(/\/[^/]+\/$/);return m?m[0]:'/';})();
-let articlesData=[],currentArticle=null;
-document.addEventListener('DOMContentLoaded',()=>{document.getElementById('versionBadge').textContent=APP_VERSION;document.getElementById('stat-version').textContent=APP_VERSION});
+const APP_VERSION='v2.0';
+let articlesData=[],currentArticle=null,lastSlug=null;
+
+marked.setOptions({breaks:true,gfm:true,smartypants:true});
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('versionBadge').textContent=APP_VERSION;
+  document.getElementById('stat-version').textContent=APP_VERSION;
+  init();
+});
 
 async function init(){
   try{
-    const res=await fetch(basePath+'articles.json');
+    const res=await fetch('articles.json',{cache:'no-store'});
+    if(!res.ok)throw new Error('articles.json не найден');
     articlesData=await res.json();
+    // Фильтрация служебных файлов
+    articlesData=articlesData.filter(a=>!a.path?.includes('Excalidraw')&&a.category?.toUpperCase()!=='EXCALIDRAW');
+    // Сортировка: новые сверху
+    articlesData.sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
     updateStats();
     renderSidebar();
     setupSearch();
     handleRoute();
-  }catch(e){console.error('Ошибка:',e)}
+    setupScrollProgress();
+    setupBackToTop();
+  }catch(e){
+    console.error('Ошибка инициализации:',e);
+    document.getElementById('mainContent').innerHTML=`<div class="callout callout-warning" style="margin:40px"><div class="callout-content"><div class="callout-title">Ошибка загрузки</div><div class="callout-text">Не удалось загрузить articles.json. Убедитесь, что файл сгенерирован.<br><small style="color:var(--text-tertiary)">${e.message}</small></div></div></div>`;
+  }
 }
 
 function updateStats(){
   document.getElementById('stat-articles').textContent=articlesData.length;
-  const cats=new Set(articlesData.map(p=>p.includes('/')?p.split('/')[0]:'Статьи'));
+  const cats=new Set(articlesData.map(a=>a.category||'Без категории'));
   document.getElementById('stat-categories').textContent=cats.size;
 }
 
@@ -332,163 +363,217 @@ function renderSidebar(){
   const c=document.getElementById('dynamic-sidebar');
   if(!articlesData.length)return;
   const grouped={};
-  articlesData.forEach(p=>{const parts=p.split('/');const f=parts.length>1?parts[0]:'Статьи';(grouped[f]=grouped[f]||[]).push(p)});
+  articlesData.forEach(a=>{const cat=a.category||'Без категории';(grouped[cat]=grouped[cat]||[]).push(a)});
   let html='';
-  Object.entries(grouped).forEach(([folder,items])=>{
-    html+=`<div class="sidebar-section"><div class="sidebar-section-header" onclick="toggleSection(this)">${formatTitle(folder)}<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="sidebar-section-items">${items.map(id=>`<a class="sidebar-link" onclick="loadArticle('${id}');return false" data-page="article-${id}"><svg class="sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${formatTitle(id.split('/').pop())}</a>`).join('')}</div></div>`;
+  Object.entries(grouped).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([cat,items])=>{
+    const isNoCat=cat==='Без категории';
+    html+=`<div class="sidebar-section"><div class="sidebar-section-header" onclick="toggleSection(this)">${isNoCat?'📁 Без категории':`📁 ${cat}`}<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="sidebar-section-items">${items.map(a=>`<a class="sidebar-link ${lastSlug===a.slug?'active':''}" onclick="loadArticle('${a.slug}');return false" data-slug="${a.slug}"><svg class="sidebar-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${escapeHtml(a.title)}</a>`).join('')}</div></div>`;
   });
   c.innerHTML=html;
 }
 
-async function loadArticle(id){
-  currentArticle=id;
+function escapeHtml(s){const div=document.createElement('div');div.textContent=s;return div.innerHTML}
+
+async function loadArticle(slug){
+  currentArticle=slug;
+  lastSlug=slug;
+  localStorage.setItem('lastArticleSlug',slug);
   const container=document.getElementById('articleContainer');
   if(!container)return;
-  container.innerHTML='<div style="padding:40px;text-align:center;color:var(--text-tertiary)">Загрузка...</div>';
+  container.innerHTML='<div style="padding:40px;text-align:center;color:var(--text-tertiary)"><span class="loading-spinner"></span>Загрузка статьи...</div>';
   document.querySelectorAll('.page-content').forEach(p=>p.style.display='none');
   document.getElementById('page-article').style.display='block';
   document.querySelectorAll('.sidebar-link').forEach(l=>l.classList.remove('active'));
-  const link=document.querySelector(`.sidebar-link[data-page="article-${id}"]`);
+  const link=document.querySelector(`.sidebar-link[data-slug="${slug}"]`);
   if(link)link.classList.add('active');
-  window.history.pushState({type:'article',id},'',basePath+encodeURIComponent(id));
+  window.history.pushState({type:'article',slug},'',`#${slug}`);
   window.scrollTo({top:0,behavior:'instant'});
   
+  const article=articlesData.find(a=>a.slug===slug);
+  if(!article){
+    container.innerHTML=`<div class="callout callout-warning"><div class="callout-content"><div class="callout-title">Статья не найдена</div><div class="callout-text">Не удалось найти статью <code>${slug}</code></div></div></div>`;
+    return;
+  }
+  
   try{
-    const res=await fetch(basePath+id+'.md');
-    if(!res.ok)throw new Error('Not found');
-    const md=await res.text();
-    const html=typeof marked!=='undefined'?marked.parse(md):md.replace(/\n/g,'<br>');
-    const titleMatch=html.match(/<h1[^>]*>(.*?)<\/h1>/i);
-    const title=titleMatch?titleMatch[1]:formatTitle(id.split('/').pop());
+    // Обработка контента: удаление первого h1 если совпадает с заголовком
+    let html=marked.parse(article.content||'');
+    const parser=new DOMParser(),doc=parser.parseFromString(html,'text/html');
+    const firstH1=doc.querySelector('h1');
+    if(firstH1&&firstH1.textContent.trim()===article.title?.trim())firstH1.remove();
+    html=doc.body.innerHTML;
     
-    container.innerHTML=`<div class="article-header"><div class="article-breadcrumb"><a href="#" onclick="showPage('home');return false">Главная</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><span>${title}</span></div><h1 class="article-title">${title}</h1></div><div class="md-content">${html}</div>`;
-    
-    container.querySelectorAll('.md-content a').forEach(a=>{
-      a.addEventListener('click',e=>{
-        const href=a.getAttribute('href');
-        const clean=href.replace(/\.md$/i,'').replace(/^\.?\//,'');
-        if(articlesData.includes(clean)){
-          e.preventDefault();
-          loadArticle(clean);
-        }
-      });
+    // Извлечение заголовков для TOC
+    const headings=Array.from(doc.querySelectorAll('h2,h3')).map((h,i)=>{
+      const id=`h-${i}`;h.id=id;
+      return{text:h.textContent,level:h.tagName==='H2'?0:1,id,tag:h.tagName.toLowerCase()};
     });
     
-    const idx=articlesData.indexOf(id);
+    const dateStr=article.date?new Date(article.date).toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'}):'';
+    
+    container.innerHTML=`<div class="article-header"><div class="article-breadcrumb"><a href="#" onclick="showHome();return false">Главная</a><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><span>${escapeHtml(article.title)}</span></div><h1 class="article-title">${escapeHtml(article.title)}</h1>${dateStr?`<div class="article-date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${dateStr}</div>`:''}</div><div class="md-content">${html}</div>`;
+    
+    // Навигация
+    const idx=articlesData.findIndex(a=>a.slug===slug);
     let navHtml='<div class="nav-pagination">';
-    if(idx>0){
-      navHtml+=`<div class="nav-page" onclick="loadArticle('${articlesData[idx-1]}');return false"><div class="nav-page-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Предыдущая</div><div class="nav-page-title">${formatTitle(articlesData[idx-1].split('/').pop())}</div></div>`;
-    }else{navHtml+='<div></div>'}
-    if(idx<articlesData.length-1){
-      navHtml+=`<div class="nav-page next" onclick="loadArticle('${articlesData[idx+1]}');return false"><div class="nav-page-label">Следующая<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div><div class="nav-page-title">${formatTitle(articlesData[idx+1].split('/').pop())}</div></div>`;
-    }else{navHtml+='<div></div>'}
+    if(idx>0){const prev=articlesData[idx-1];navHtml+=`<div class="nav-page" onclick="loadArticle('${prev.slug}');return false"><div class="nav-page-label"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Предыдущая</div><div class="nav-page-title">${escapeHtml(prev.title)}</div></div>`}else{navHtml+='<div></div>'}
+    if(idx<articlesData.length-1){const next=articlesData[idx+1];navHtml+=`<div class="nav-page next" onclick="loadArticle('${next.slug}');return false"><div class="nav-page-label">Следующая<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div><div class="nav-page-title">${escapeHtml(next.title)}</div></div>`}else{navHtml+='<div></div>'}
     navHtml+='</div>';
     container.querySelector('.md-content').insertAdjacentHTML('afterend',navHtml);
     
+    // TOC
+    updateTOC(headings);
+    // Подсветка кода
+    Prism.highlightAll();
+    // Кнопки копирования кода
     setupCodeCopy(container);
-    updateTOC();
+    // Ссылки на другие статьи
+    container.querySelectorAll('.md-content a').forEach(a=>{
+      const href=a.getAttribute('href');
+      if(href&&href.endsWith('.md')){
+        const targetSlug=href.replace('.md','').split('/').pop();
+        if(articlesData.some(ar=>ar.slug===targetSlug)){
+          a.onclick=(e)=>{e.preventDefault();loadArticle(targetSlug)};
+          a.style.cursor='pointer';
+        }
+      }
+    });
   }catch(e){
-    console.error('Ошибка:',e);
-    container.innerHTML=`<div class="callout callout-warning"><div class="callout-content"><div class="callout-title">Ошибка</div><div class="callout-text">Не удалось загрузить <code>${id}.md</code></div></div></div>`;
+    console.error('Ошибка рендера:',e);
+    container.innerHTML=`<div class="callout callout-warning"><div class="callout-content"><div class="callout-title">Ошибка</div><div class="callout-text">Не удалось отобразить статью</div></div></div>`;
   }
 }
 
-function formatTitle(s){return s.charAt(0).toUpperCase()+s.slice(1).replace(/[-_]/g,' ')}
+function updateTOC(headings){
+  const list=document.getElementById('tocList');list.innerHTML='';
+  if(!headings.length){document.getElementById('toc').style.display='none';return}
+  headings.forEach(h=>{
+    const li=document.createElement('li'),a=document.createElement('a');
+    a.className=`toc-link level-${h.level+1}`;a.href='#'+h.id;a.textContent=h.text;
+    a.onclick=(e)=>{e.preventDefault();document.getElementById(h.id)?.scrollIntoView({behavior:'smooth',block:'start'})};
+    li.appendChild(a);list.appendChild(li);
+  });
+  document.getElementById('toc').style.display='block';
+}
 
 function setupCodeCopy(container){
-  container.querySelectorAll('.md-content code').forEach(code=>{
-    if(!code.closest('pre')){
-      code.style.cursor='pointer';
-      code.onclick=(e)=>{e.stopPropagation();copyToClipboard(code.textContent)}
-    }
-  });
   container.querySelectorAll('.md-content pre').forEach(pre=>{
     if(!pre.querySelector('.code-block-header')){
       const h=document.createElement('div');h.className='code-block-header';
-      h.innerHTML=`<span class="code-block-lang">code</span><button class="code-block-copy" onclick="copyCodeBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/></svg> Копировать</button>`;
+      const code=pre.querySelector('code');
+      const lang=code?.className?.match(/language-(\w+)/)?.[1]||'code';
+      h.innerHTML=`<span class="code-block-lang">${lang}</span><button class="code-block-copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/></svg> Копировать</button>`;
       pre.insertBefore(h,pre.firstChild);
+      h.querySelector('.code-block-copy').onclick=(e)=>{
+        e.stopPropagation();
+        const text=code?.textContent||'';
+        navigator.clipboard.writeText(text);
+        const btn=h.querySelector('.code-block-copy');
+        btn.classList.add('copied');
+        btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Скопировано!';
+        setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/></svg> Копировать'},1800);
+        showNotification('Код скопирован!','success');
+      };
     }
   });
 }
 
-function copyToClipboard(text){navigator.clipboard.writeText(text)}
-function copyCodeBlock(btn){
-  const code=btn.closest('pre').querySelector('code').textContent;
-  navigator.clipboard.writeText(code);
-  btn.classList.add('copied');
-  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Скопировано!';
-  setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/></svg> Копировать'},1800)
+function showNotification(msg,type='success'){
+  const n=document.getElementById('notification');
+  n.textContent=msg;n.className=`notification ${type} show`;
+  setTimeout(()=>n.classList.remove('show'),3000);
 }
-
-function updateTOC(){
-  const list=document.getElementById('tocList');list.innerHTML='';
-  const headings=document.querySelectorAll('#articleContainer .md-content h2,#articleContainer .md-content h3');
-  headings.forEach((h,i)=>{
-    const id='h-'+i;h.id=id;
-    const li=document.createElement('li'),a=document.createElement('a');
-    a.className='toc-link level-'+h.tagName.charAt(1);a.href='#'+id;a.textContent=h.textContent;
-    a.onclick=(e)=>{e.preventDefault();h.scrollIntoView({behavior:'smooth',block:'start'})};
-    li.appendChild(a);list.appendChild(li);
-  });
-  document.getElementById('toc').style.display=headings.length>0?'block':'none';
-}
-
-function showPage(pageId){
-  document.querySelectorAll('.page-content').forEach(p=>p.style.display='none');
-  document.getElementById('page-'+pageId).style.display='block';
-  window.scrollTo({top:0,behavior:'instant'});
-  document.querySelectorAll('.sidebar-link').forEach(l=>l.classList.remove('active'));
-  const link=document.querySelector(`.sidebar-link[data-page="${pageId}"]`);
-  if(link)link.classList.add('active');
-  if(pageId==='home'){document.getElementById('toc').style.display='none';window.history.pushState({type:'home'},'',basePath)}
-  closeMobileSidebar();
-}
-
-function navigateToFirst(){if(articlesData.length>0)loadArticle(articlesData[0])}
 
 function setupSearch(){
   const input=document.getElementById('searchInput'),results=document.getElementById('searchResults');
-  input.addEventListener('input',(e)=>{
-    const q=e.target.value.toLowerCase().trim();
-    if(!q){results.innerHTML='<div class="search-empty">Начните вводить для поиска...</div>';return}
-    const filtered=articlesData.filter(id=>id.toLowerCase().includes(q));
-    if(!filtered.length){results.innerHTML='<div class="search-empty">Не найдено</div>';return}
-    results.innerHTML=filtered.map(id=>`<div class="search-result-item" onclick="loadArticle('${id}');document.getElementById('searchOverlay').classList.remove('active')"><div class="search-result-text"><div class="search-result-title">${formatTitle(id.split('/').pop())}</div></div></div>`).join('');
-  });
+  function performSearch(q){
+    q=q.toLowerCase().trim();
+    if(q.length<2){results.innerHTML='<div class="search-empty">Введите минимум 2 символа</div>';return}
+    const terms=q.split(/\s+/);
+    const scored=articlesData.map(a=>{
+      const t=(a.title||'').toLowerCase(),d=(a.description||'').toLowerCase(),c=(a.content||'').toLowerCase(),tags=(a.tags||[]).join(' ').toLowerCase();
+      let score=0;
+      terms.forEach(term=>{if(t.includes(term))score+=3;if(d.includes(term))score+=2;if(c.includes(term))score+=1;if(tags.includes(term))score+=2});
+      return{a,score};
+    }).filter(r=>r.score>0).sort((a,b)=>b.score-a.score);
+    if(!scored.length){results.innerHTML='<div class="search-empty">Ничего не найдено</div>';return}
+    results.innerHTML=scored.map(({a})=>{
+      const date=a.date?new Date(a.date).toLocaleDateString('ru-RU'):'—';
+      let preview='';
+      const idx=(a.content||'').toLowerCase().indexOf(q);
+      if(idx!==-1){const s=Math.max(0,idx-60),e=Math.min(a.content.length,idx+q.length+60);preview=a.content.substring(s,e).replace(/\s+/g,' ').trim();if(s>0)preview='…'+preview;if(e<a.content.length)preview+='…'}
+      return`<div class="search-result-item" onclick="loadArticle('${a.slug}');document.getElementById('searchOverlay').classList.remove('active')"><div class="search-result-text"><div class="search-result-title">${highlight(a.title,q)}</div><div class="search-result-meta">${escapeHtml(a.category||'Без категории')} • ${date}</div><div class="search-result-description">${preview||escapeHtml(a.description||'')}</div></div></div>`;
+    }).join('');
+  }
+  function highlight(text,q){if(!text||!q)return escapeHtml(text);const r=new RegExp(`(${escapeRegExp(q)})`,'gi');return escapeHtml(text).replace(r,'<span style="color:var(--accent);font-weight:500">$1</span>')}
+  function escapeRegExp(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+  
+  let timeout;
+  input.addEventListener('input',(e)=>{clearTimeout(timeout);timeout=setTimeout(()=>performSearch(e.target.value),200)});
 }
 
 document.getElementById('searchTrigger').addEventListener('click',()=>{document.getElementById('searchOverlay').classList.add('active');setTimeout(()=>document.getElementById('searchInput').focus(),80)});
 document.getElementById('searchOverlay').addEventListener('click',(e)=>{if(e.target===e.currentTarget)document.getElementById('searchOverlay').classList.remove('active')});
 document.addEventListener('keydown',(e)=>{if(e.key==='Escape')document.getElementById('searchOverlay').classList.remove('active')});
 
-window.addEventListener('scroll',()=>{
-  const st=window.scrollY,dh=document.documentElement.scrollHeight-window.innerHeight;
-  document.getElementById('scrollProgress').style.width=dh>0?(st/dh)*100+'%':'0%';
-});
+function showHome(){
+  document.querySelectorAll('.page-content').forEach(p=>p.style.display='none');
+  document.getElementById('page-home').style.display='block';
+  document.querySelectorAll('.sidebar-link').forEach(l=>l.classList.remove('active'));
+  document.querySelector('.sidebar-link[data-page="home"]')?.classList.add('active');
+  document.getElementById('toc').style.display='none';
+  window.history.pushState({type:'home'},'','#');
+  closeMobileSidebar();
+  window.scrollTo({top:0,behavior:'instant'});
+}
+
+function showAbout(){
+  document.querySelectorAll('.page-content').forEach(p=>p.style.display='none');
+  document.getElementById('page-about').style.display='block';
+  document.querySelectorAll('.sidebar-link').forEach(l=>l.classList.remove('active'));
+  document.querySelector('.sidebar-link[data-page="about"]')?.classList.add('active');
+  document.getElementById('toc').style.display='none';
+  window.history.pushState({type:'about'},'','?page=about');
+  closeMobileSidebar();
+  window.scrollTo({top:0,behavior:'instant'});
+}
+
+function navigateToFirst(){if(articlesData.length>0)loadArticle(articlesData[0].slug)}
 
 function toggleSection(header){if(header.closest('.sidebar-section').dataset.locked==='true')return;header.parentElement.classList.toggle('collapsed')}
+
 const menuToggle=document.getElementById('menuToggle'),sidebar=document.getElementById('sidebar'),sidebarOverlay=document.getElementById('sidebarOverlay');
-menuToggle.addEventListener('click',()=>{sidebar.classList.toggle('open');sidebarOverlay.classList.toggle('active')});
-sidebarOverlay.addEventListener('click',()=>{sidebar.classList.remove('open');sidebarOverlay.classList.remove('active')});
+menuToggle?.addEventListener('click',()=>{sidebar.classList.toggle('open');sidebarOverlay.classList.toggle('active')});
+sidebarOverlay?.addEventListener('click',()=>{sidebar.classList.remove('open');sidebarOverlay.classList.remove('active')});
 function closeMobileSidebar(){sidebar.classList.remove('open');sidebarOverlay.classList.remove('active')}
 
 function handleRoute(){
-  const path=window.location.pathname.replace(/\/$/,''),articleId=decodeURIComponent(path.replace(basePath,'').replace(/^\/+/,''));
-  if(articleId&&articleId!=='index.html'&&articlesData.includes(articleId)){loadArticle(articleId);return}
-  showPage('home');
+  const hash=window.location.hash.substring(1);
+  if(hash&&articlesData.some(a=>a.slug===hash)){loadArticle(hash);return}
+  // Проверка localStorage
+  const saved=localStorage.getItem('lastArticleSlug');
+  if(saved&&articlesData.some(a=>a.slug===saved)){loadArticle(saved);return}
+  showHome();
 }
 window.addEventListener('popstate',handleRoute);
 
-if (window.location.pathname.includes('404')) {
-  setTimeout(() => {
-    const path = window.location.pathname.replace(/\/404\/?$/,'').replace(/.*?\/test-Jekyll\//,'').replace(/^\/+/,'');
-    if (path && path !== 'index.html' && articlesData.includes(decodeURIComponent(path))) {
-      loadArticle(decodeURIComponent(path));
-    }
-  }, 150);
+function setupScrollProgress(){
+  window.addEventListener('scroll',()=>{
+    const st=window.scrollY,dh=document.documentElement.scrollHeight-window.innerHeight;
+    document.getElementById('scrollProgress').style.width=dh>0?(st/dh)*100+'%':'0%';
+  });
 }
 
-document.addEventListener('DOMContentLoaded',init);
+function setupBackToTop(){
+  const btn=document.createElement('button');
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px"><polyline points="18 15 12 9 6 15"/></svg>';
+  btn.style.cssText='position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--bg-tertiary);border:1px solid var(--border-color);color:var(--text-primary);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;visibility:hidden;transition:all .2s ease;z-index:999';
+  btn.onmouseenter=()=>btn.style.background='var(--bg-hover)';
+  btn.onmouseleave=()=>btn.style.background='var(--bg-tertiary)';
+  btn.onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
+  document.body.appendChild(btn);
+  window.addEventListener('scroll',()=>{btn.style.opacity=window.scrollY>400?'1':'0';btn.style.visibility=window.scrollY>400?'visible':'hidden'});
+}
 </script>
 </body>
 </html>
