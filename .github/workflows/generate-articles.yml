@@ -14,23 +14,90 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Важно для получения истории коммитов
 
-      - name: Build articles.json
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install @octokit/rest marked
+
+      - name: Generate articles.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
         run: |
-          # Ищем все .md файлы, исключая служебные
-          find . -type f -name "*.md" \
-            ! -path "./.github/*" \
-            ! -path "./node_modules/*" \
-            ! -name "README.md" \
-            ! -name "CHANGELOG.md" \
-            | sed 's|^\./||' \
-            | sed 's|\.md$||' \
-            | sort \
-            | jq -R . \
-            | jq -s '.' > articles.json
-          
-          echo "✓ Generated articles.json:"
-          cat articles.json
+          node << 'EOF'
+          const fs = require('fs');
+          const path = require('path');
+          const { Octokit } = require('@octokit/rest');
+          const { marked } = require('marked');
+
+          const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+          const owner = process.env.REPO_OWNER;
+          const repo = process.env.REPO_NAME;
+
+          async function getFirstCommitDate(filePath) {
+            try {
+              const { data } = await octokit.repos.listCommits({
+                owner, repo, path: filePath, per_page: 1, direction: 'asc'
+              });
+              return data[0]?.commit?.committer?.date || new Date().toISOString();
+            } catch {
+              return new Date().toISOString();
+            }
+          }
+
+          function findMarkdownFiles(dir, base = dir) {
+            let results = [];
+            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+              const full = path.join(dir, entry.name);
+              if (entry.isDirectory()) {
+                if (entry.name === 'node_modules' || entry.name.startsWith('.') || entry.name === '.github') continue;
+                results.push(...findMarkdownFiles(full, base));
+              } else if (entry.name.endsWith('.md') && !['README.md','CHANGELOG.md'].includes(entry.name)) {
+                results.push(path.relative(base, full));
+              }
+            }
+            return results;
+          }
+
+          (async () => {
+            const files = findMarkdownFiles('.');
+            const articles = [];
+
+            for (const file of files) {
+              const content = fs.readFileSync(file, 'utf8');
+              const slug = path.basename(file, '.md').toLowerCase().replace(/\s+/g, '-');
+              const category = path.dirname(file) === '.' ? 'Без категории' : path.basename(path.dirname(file));
+              const date = await getFirstCommitDate(file);
+
+              // Извлечение заголовка и описания
+              const titleMatch = content.match(/^#\s+(.+)$/m);
+              const title = titleMatch ? titleMatch[1].trim() : path.basename(file, '.md');
+              const descMatch = content.replace(/^#.*$/m, '').match(/^\s*([^#\n].+?)(?:\n\n|$)/s);
+              const description = descMatch ? descMatch[1].trim().replace(/\n/g, ' ').substring(0, 150) + '…' : '';
+
+              articles.push({
+                title, slug, description, category,
+                content: content,
+                date,
+                path: file,
+                tags: []
+              });
+            }
+
+            // Сортировка: новые сверху
+            articles.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            fs.writeFileSync('articles.json', JSON.stringify(articles, null, 2));
+            console.log(`✓ Сгенерирован articles.json: ${articles.length} статей`);
+          })();
+          EOF
 
       - name: Commit changes
         run: |
@@ -41,5 +108,5 @@ jobs:
             git commit -m "chore: update articles index [skip ci]"
             git push
           else
-            echo "✓ No changes to commit"
+            echo "✓ Нет изменений"
           fi
